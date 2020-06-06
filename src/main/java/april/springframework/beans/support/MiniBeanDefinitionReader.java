@@ -88,6 +88,7 @@ public class MiniBeanDefinitionReader {
 
     /**
      * 解析配置文件中扫描的class文件，并封装为BeanDefinition
+     *
      * @return
      */
     public List<MiniBeanDefinition> loadBeanDefinitions() {
@@ -104,7 +105,7 @@ public class MiniBeanDefinitionReader {
                         .factoryBeanName(toLowerFirstCase(beanClass.getSimpleName())).classBeanName(beanClass.getName()).build());
 
                 // 获取接口
-                for (Class<?> i : beanClass.getInterfaces()){
+                for (Class<?> i : beanClass.getInterfaces()) {
 
                     beanDefinitions.add(MiniBeanDefinition.builder()
                             .factoryBeanName(toLowerFirstCase(i.getName())).classBeanName(beanClass.getName()).build());

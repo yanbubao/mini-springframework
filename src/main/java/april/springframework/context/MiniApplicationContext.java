@@ -20,5 +20,7 @@ public class MiniApplicationContext {
 
         // 02.解析配置文件，封装成BeanDefinition
         List<MiniBeanDefinition> beanDefinitions = reader.loadBeanDefinitions();
+
+
     }
 }
