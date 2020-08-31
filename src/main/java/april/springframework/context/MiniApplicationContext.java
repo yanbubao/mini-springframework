@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 负责创建bean以及DI.
@@ -18,6 +19,8 @@ import java.util.Map;
  * @author yanzx
  */
 public class MiniApplicationContext {
+
+    private MiniBeanDefinitionReader reader;
 
     /**
      * beanDefinitionMap
@@ -37,7 +40,7 @@ public class MiniApplicationContext {
     public MiniApplicationContext(String... contextConfigLocations) {
 
         // 01.加载配置文件
-        MiniBeanDefinitionReader reader = new MiniBeanDefinitionReader(contextConfigLocations);
+        reader = new MiniBeanDefinitionReader(contextConfigLocations);
 
         try {
             // 02.解析配置文件，封装成BeanDefinition
@@ -100,6 +103,18 @@ public class MiniApplicationContext {
         return this.getBean(beanClass.getName());
     }
 
+    /**
+     * 可能涉及到循环依赖
+     * A{ B b}
+     * B{ A b}
+     * 用两个缓存，循环两次
+     * 1、把第一次读取结果为空的BeanDefinition存到第一个缓存
+     * 2、等第一次循环之后，第二次循环再检查第一次的缓存，再进行赋值
+     *
+     * @param beanName
+     * @param beanDefinition
+     * @param beanWrapper
+     */
     private void populateBean(String beanName, MiniBeanDefinition beanDefinition, MiniBeanWrapper beanWrapper) {
 
         Object instance = beanWrapper.getWrapperInstance();
@@ -139,12 +154,29 @@ public class MiniApplicationContext {
         String beanClassName = beanDefinition.getBeanClassName();
         Object instance = null;
         try {
-            Class<?> clazz = Class.forName(beanClassName);
-            instance = clazz.newInstance();
-            factoryBeanObjectCache.put(beanName, instance);
+            // 默认单例bean，ioc中存在的话直接获取，不再实例化
+            if (factoryBeanObjectCache.containsKey(beanName)) {
+                instance = factoryBeanObjectCache.get(beanName);
+            } else {
+                Class<?> clazz = Class.forName(beanClassName);
+                instance = clazz.newInstance();
+                factoryBeanObjectCache.put(beanName, instance);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return instance;
+    }
+
+    public int getBeanDefinitionCount() {
+        return this.beanDefinitionMap.size();
+    }
+
+    public String[] getBeanDefinitionNames() {
+        return this.beanDefinitionMap.keySet().toArray(new String[this.beanDefinitionMap.size()]);
+    }
+
+    public Properties getConfig() {
+        return this.reader.getConfig();
     }
 }

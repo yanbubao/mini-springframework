@@ -10,4 +10,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface MiniRequestParam {
     String value() default "";
+
+    boolean required() default true;
 }

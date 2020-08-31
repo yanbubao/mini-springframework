@@ -19,7 +19,11 @@ public class MiniBeanDefinitionReader {
 
     private static final String SCAN_PACKAGE_KEY = "scanPackage";
 
-    private Properties contextConfig = new Properties();
+    private final Properties contextConfig = new Properties();
+
+    public Properties getConfig() {
+        return this.contextConfig;
+    }
 
     /**
      * 保存扫描到的类名称.
@@ -103,7 +107,7 @@ public class MiniBeanDefinitionReader {
                 // beanName分为几种
                 // 1、首字母小写
                 beanDefinitions.add(MiniBeanDefinition.builder()
-                        .factoryBeanName(toLowerFirstCase(beanClass.getSimpleName())).classBeanName(beanClass.getName()).build());
+                        .factoryBeanName(toLowerFirstCase(beanClass.getSimpleName())).beanClassName(beanClass.getName()).build());
 
                 // 2、自定义的beanName
 
@@ -111,7 +115,7 @@ public class MiniBeanDefinitionReader {
                 for (Class<?> i : beanClass.getInterfaces()) {
 
                     beanDefinitions.add(MiniBeanDefinition.builder()
-                            .factoryBeanName(toLowerFirstCase(i.getName())).classBeanName(beanClass.getName()).build());
+                            .factoryBeanName(toLowerFirstCase(i.getName())).beanClassName(beanClass.getName()).build());
                 }
 
             } catch (ClassNotFoundException e) {
