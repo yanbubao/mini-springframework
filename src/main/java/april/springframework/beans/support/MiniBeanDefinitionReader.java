@@ -1,6 +1,6 @@
 package april.springframework.beans.support;
 
-import april.springframework.bean.config.MiniBeanDefinition;
+import april.springframework.beans.config.MiniBeanDefinition;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 

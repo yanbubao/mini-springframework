@@ -1,4 +1,4 @@
-package april.springframework.bean.config;
+package april.springframework.beans.config;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +12,6 @@ public class MiniBeanDefinition {
 
     private String factoryBeanName;
 
-    private String classBeanName;
+    private String beanClassName;
 
 }
