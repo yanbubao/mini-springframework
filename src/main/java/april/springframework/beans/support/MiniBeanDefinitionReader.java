@@ -7,7 +7,6 @@ import org.apache.commons.compress.utils.Lists;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -101,10 +100,14 @@ public class MiniBeanDefinitionReader {
                 Class<?> beanClass = Class.forName(className);
 
                 // 保存beanName和对应的className（全类名）
+                // beanName分为几种
+                // 1、首字母小写
                 beanDefinitions.add(MiniBeanDefinition.builder()
                         .factoryBeanName(toLowerFirstCase(beanClass.getSimpleName())).classBeanName(beanClass.getName()).build());
 
-                // 获取接口
+                // 2、自定义的beanName
+
+                // 3、获取接口
                 for (Class<?> i : beanClass.getInterfaces()) {
 
                     beanDefinitions.add(MiniBeanDefinition.builder()

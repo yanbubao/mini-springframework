@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 委派，负责任务分发
+ *
  * @author yanzx
  */
 @Slf4j
