@@ -6,6 +6,8 @@ import april.springframework.annotation.MiniService;
 import april.springframework.beans.MiniBeanWrapper;
 import april.springframework.beans.config.MiniBeanDefinition;
 import april.springframework.beans.support.MiniBeanDefinitionReader;
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.Properties;
  *
  * @author yanzx
  */
+@Slf4j
 public class MiniApplicationContext {
 
     private MiniBeanDefinitionReader reader;
@@ -45,6 +48,8 @@ public class MiniApplicationContext {
         try {
             // 02.解析配置文件，封装成BeanDefinition
             List<MiniBeanDefinition> beanDefinitions = reader.loadBeanDefinitions();
+
+            log.info("all beanDefinitions : {}", JSON.toJSONString(beanDefinitions));
 
             // 03、缓存BeanDefinition
             doResistBeanDefinitions(beanDefinitions);
@@ -142,7 +147,7 @@ public class MiniApplicationContext {
                     continue;
                 }
 
-                field.set(instance, this.factoryBeanWrapperCache.get(autowiredValue));
+                field.set(instance, this.factoryBeanWrapperCache.get(autowiredValue).getWrapperInstance());
 
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

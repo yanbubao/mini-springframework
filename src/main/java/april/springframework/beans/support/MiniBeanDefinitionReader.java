@@ -102,7 +102,7 @@ public class MiniBeanDefinitionReader {
 
             try {
                 Class<?> beanClass = Class.forName(className);
-
+                if(beanClass.isInterface()) return;
                 // 保存beanName和对应的className（全类名）
                 // beanName分为几种
                 // 1、首字母小写
@@ -115,7 +115,7 @@ public class MiniBeanDefinitionReader {
                 for (Class<?> i : beanClass.getInterfaces()) {
 
                     beanDefinitions.add(MiniBeanDefinition.builder()
-                            .factoryBeanName(toLowerFirstCase(i.getName())).beanClassName(beanClass.getName()).build());
+                            .factoryBeanName(i.getName()).beanClassName(beanClass.getName()).build());
                 }
 
             } catch (ClassNotFoundException e) {

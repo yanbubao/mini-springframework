@@ -11,11 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,12 +43,7 @@ public class MiniDispatcherServlet extends HttpServlet {
      */
     private List<MiniViewResolver> viewResolvers = Lists.newArrayList();
 
-
     private static final String CONTEXT_CONFIG_LOCATION = "contextConfigLocation";
-
-    private Map<String, Object> ioc = new HashMap<>();
-
-    private Map<String, Method> handlerMapping = new HashMap<>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,10 +54,15 @@ public class MiniDispatcherServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
+            log.info("uri : {}",req.getRequestURI());
             doDispatch(req, resp);
-
         } catch (Exception e) {
-
+            try {
+                processDispatchResult(req, resp, new MiniModelAndView("500"));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                resp.getWriter().write("500 Exception, Detail : " + Arrays.toString(e.getStackTrace()));
+            }
         }
 
     }
@@ -75,22 +74,36 @@ public class MiniDispatcherServlet extends HttpServlet {
      * @param req
      * @param resp
      */
-    private void doDispatch(HttpServletRequest req, HttpServletResponse resp) {
+    private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         // 1、通过url获取 handlerMapping
         MiniHandlerMapping handlerMapping = getHandler(req);
         if (handlerMapping == null) {
+            log.error("handlerMapping is null");
             processDispatchResult(req, resp, new MiniModelAndView("404"));
             return;
         }
 
         // 2、根据handlerMapping 获取handlerAdapter
+        MiniHandlerAdapter ha = handlerAdapterMap.get(handlerMapping);
 
         // 3、解析某个方法的形参和返回值后，统一封装为ModelAndView对象
+        MiniModelAndView mv = ha.handler(req, resp, handlerMapping);
 
         // 4、modelAndView转换为 ViewResolver
+        this.processDispatchResult(req, resp, mv);
     }
 
-    private void processDispatchResult(HttpServletRequest req, HttpServletResponse resp, MiniModelAndView miniModelAndView) {
+    private void processDispatchResult(HttpServletRequest req, HttpServletResponse resp,
+                                       MiniModelAndView modelAndView) throws Exception {
+        if (modelAndView == null) return;
+        if (this.viewResolvers.isEmpty()) return;
+        for (MiniViewResolver viewResolver : this.viewResolvers) {
+            MiniView view = viewResolver.resolveViewName(modelAndView.getViewName());
+            // 输出至浏览器
+            view.render(modelAndView.getModel(), req, resp);
+            return;
+        }
+
     }
 
     private MiniHandlerMapping getHandler(HttpServletRequest req) {
@@ -98,9 +111,10 @@ public class MiniDispatcherServlet extends HttpServlet {
         String uri = req.getRequestURI();
         String contextPath = req.getContextPath();
         uri = uri.replaceAll(contextPath, "").replaceAll("/+", "/");
+
         for (MiniHandlerMapping handlerMapping : this.handlerMappings) {
             Matcher matcher = handlerMapping.getPattern().matcher(uri);
-            if (!matcher.matches()) return null;
+            if (!matcher.matches()) continue;
             return handlerMapping;
         }
         return null;
@@ -132,9 +146,20 @@ public class MiniDispatcherServlet extends HttpServlet {
     }
 
     private void initViewResolvers(MiniApplicationContext context) {
+        String templateRoot = context.getConfig().getProperty("templateRoot");
+        String templateRootPath =
+                Objects.requireNonNull(this.getClass().getClassLoader().getResource(templateRoot)).getFile();
+
+        File templateRootDir = new File(templateRootPath);
+        for (File file : Objects.requireNonNull(templateRootDir.listFiles())) {
+            this.viewResolvers.add(new MiniViewResolver(templateRoot));
+        }
     }
 
     private void initHandlerAdapters(MiniApplicationContext context) {
+        for (MiniHandlerMapping handlerMapping : this.handlerMappings) {
+            handlerAdapterMap.put(handlerMapping, new MiniHandlerAdapter());
+        }
     }
 
     private void initHandlerMappings(MiniApplicationContext context) {
