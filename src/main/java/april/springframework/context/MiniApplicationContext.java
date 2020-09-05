@@ -3,6 +3,8 @@ package april.springframework.context;
 import april.springframework.annotation.MiniAutowired;
 import april.springframework.annotation.MiniController;
 import april.springframework.annotation.MiniService;
+import april.springframework.aop.MiniJdkDynamicAopProxy;
+import april.springframework.aop.config.MiniAopConfig;
 import april.springframework.aop.support.MiniAdvisedSupport;
 import april.springframework.beans.MiniBeanWrapper;
 import april.springframework.beans.config.MiniBeanDefinition;
@@ -171,11 +173,14 @@ public class MiniApplicationContext {
 
                 // 1、加载AOP的配置文件
                 MiniAdvisedSupport advisedSupport = loadAopConfig(beanDefinition);
+                advisedSupport.setTargetClass(clazz);
+                advisedSupport.setTarget(instance);
+
                 // 2、是否对bean进行AOP
                 // 如果bean需要AOP，则将增强后的实例添加到IOC的bean容器中；不需要增强直接put原生bean
-
-
-
+                if (advisedSupport.pointCutMath()) {
+                    instance = new MiniJdkDynamicAopProxy(advisedSupport).getProxy();
+                }
 
                 //===================AOP结束========================
 
@@ -188,7 +193,18 @@ public class MiniApplicationContext {
     }
 
     private MiniAdvisedSupport loadAopConfig(MiniBeanDefinition beanDefinition) {
-        return null;
+        Properties config = this.reader.getConfig();
+
+        MiniAopConfig aopConfig = MiniAopConfig.builder()
+                .pointCut(config.getProperty("pointCut"))
+                .aspectClass(config.getProperty("aspectClass"))
+                .aspectBefore(config.getProperty("aspectBefore"))
+                .aspectAfter(config.getProperty("aspectAfter"))
+                .aspectAfterThrow(config.getProperty("aspectAfterThrow"))
+                .aspectAfterThrowingName(config.getProperty("aspectAfterThrowingName"))
+                .build();
+
+        return new MiniAdvisedSupport(aopConfig);
     }
 
     public int getBeanDefinitionCount() {

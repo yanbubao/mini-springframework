@@ -11,6 +11,9 @@ import april.springframework.webmvc.servlet.MiniModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author yanzx
@@ -36,8 +39,15 @@ public class MyAction {
     public MiniModelAndView add(HttpServletRequest request,
                                 HttpServletResponse response,
                                 @MiniRequestParam("name") String name, @MiniRequestParam("addr") String addr) {
-        String result = modifyService.add(name, addr);
-        return out(response, result);
+        try {
+            String result = modifyService.add(name, addr);
+            return out(response, result);
+        } catch (Throwable e) {
+            Map<String, String> model = new HashMap<String, String>();
+            model.put("detail", e.getCause().getMessage());
+            model.put("stackTrace", Arrays.toString(e.getStackTrace()));
+            return new MiniModelAndView("500", model);
+        }
     }
 
     @MiniRequestMapping("/remove.json")

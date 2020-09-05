@@ -9,8 +9,9 @@ import april.springframework.annotation.MiniService;
 @MiniService
 public class ModifyService implements IModifyService {
     @Override
-    public String add(String name, String addr) {
-        return "class:modifyService, method:add, param:name=" + name + ", addr=" + addr;
+    public String add(String name, String addr) throws Exception {
+        throw new Exception("测试afterThrowing所抛出的异常！");
+       // return "class:modifyService, method:add, param:name=" + name + ", addr=" + addr;
     }
 
     @Override
