@@ -1,6 +1,7 @@
 package april.springframework.webmvc.servlet;
 
 import april.springframework.annotation.MiniRequestParam;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public class MiniHandlerAdapter {
             for (Annotation a : pa[i]) {
                 if (a instanceof MiniRequestParam) {
                     String paramName = ((MiniRequestParam) a).value();
-                    if (!"".equals(paramName.trim())) {
+                    if (StringUtils.isNotBlank(paramName.trim())) {
                         paramIndexMapping.put(paramName, i);
                     }
                 }
