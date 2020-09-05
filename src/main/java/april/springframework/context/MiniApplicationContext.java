@@ -3,6 +3,7 @@ package april.springframework.context;
 import april.springframework.annotation.MiniAutowired;
 import april.springframework.annotation.MiniController;
 import april.springframework.annotation.MiniService;
+import april.springframework.aop.support.MiniAdvisedSupport;
 import april.springframework.beans.MiniBeanWrapper;
 import april.springframework.beans.config.MiniBeanDefinition;
 import april.springframework.beans.support.MiniBeanDefinitionReader;
@@ -165,12 +166,29 @@ public class MiniApplicationContext {
             } else {
                 Class<?> clazz = Class.forName(beanClassName);
                 instance = clazz.newInstance();
+
+                //==================AOP开始=========================
+
+                // 1、加载AOP的配置文件
+                MiniAdvisedSupport advisedSupport = loadAopConfig(beanDefinition);
+                // 2、是否对bean进行AOP
+                // 如果bean需要AOP，则将增强后的实例添加到IOC的bean容器中；不需要增强直接put原生bean
+
+
+
+
+                //===================AOP结束========================
+
                 factoryBeanObjectCache.put(beanName, instance);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return instance;
+    }
+
+    private MiniAdvisedSupport loadAopConfig(MiniBeanDefinition beanDefinition) {
+        return null;
     }
 
     public int getBeanDefinitionCount() {
