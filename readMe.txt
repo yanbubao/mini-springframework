@@ -1,4 +1,4 @@
-2.1 Spring核心原理
+2.1 Spirng核心原理
 
 spring中bean默认都是单例的！而且是Lazy加载的！换言之是在getBean()后实例化的！
 
@@ -26,44 +26,61 @@ IoC中三个重要的类：
 
 无论是什么形式的配置文件，如properties,xml,yml在spring中会变成 BeanDefinition（集合）！
 
-getBean() -> ApplicationContext -> BeanDefinition -> BeanDefinition -> BeanWapper -> getBean()
-
-
-二、给IoC容器注册bean的几种方式
-1、@Bean
-2、@ComponentScan
-3、@Import系列
-4、将要注册的bean封装为FactoryBean
-...
+getBean() -> ApplicationContext -> BeanDefinitionReader -> BeanDefinition -> BeanWapper -> getBean()
 
 
 
+Mvc:
+
+SpringMvc九大组件：
+1、MultipartResolver 多文件上传组件
+2、LocaleResolver    本地语言环境
+3、ThemeResolver     主题模板处理器
+4、HandlerMapping    保存url映射关系
+5、HandlerAdapter    动态参数适配器
+6、HandlerExceptionResolver 异常拦截器
+7、RequestToViewNameTranslator 视图提取器，从request中获取viewName
+8、ViewwResolver     视图转换器，模板引擎
+9、FlashMapManager   参数缓存器
+
+
+HandlerMapping -> HandlerAdapter -> ModelAndView -> ViewResolver -> View
 
 
 
+IOC、DI、MVC小点：
+
+IOC:
+	ApplicationContext
+	BeanDefinition
+	BeanWapper
+	BeanDefinitionReader
+	getBean() 采用单例bean，Lazy加载
+
+DI:
+	getBean() -> instantiateBean(); 反射实例化bean、执行DI，populateBean()完成依赖注入！
+	用缓存的方式解决依赖注入！
+
+MVC:
+	DispatcherServlet.init(); 初始化九大组件！
 
 
+****************************************************
+
+AOP:
 
 
+动态代理实现AOP！增强、解耦！
+JDK，跟目标类实现一个相同的接口！
+Cglib直接继承目标类，重写目标方法！
 
 
+Spring中AOP在DI之前完成！
+IOC -> AOP -> DI -> MVC
 
 
+AOP顶层设计：
+getBean() -> ApplicationContext -> AdvisedSupport -> AopConfig -> Advice -> JdkDynamicAopProxy
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+目标方法与通知是一对多的关系！ Map<Method, List<Advice>>
