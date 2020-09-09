@@ -75,8 +75,8 @@ JDK，跟目标类实现一个相同的接口！
 Cglib直接继承目标类，重写目标方法！
 
 
-Spring中AOP在DI之前完成！
-IOC -> AOP -> DI -> MVC
+Spring源码中AOP在DI之后完成！
+IOC -> DI -> AOP -> MVC
 
 
 AOP顶层设计：
