@@ -39,6 +39,7 @@ public class MiniAdvisedSupport {
 
     /**
      * <目标Method, <切面方法名, 通知>>
+     *   Spring源码中是Map<MethodCacheKey, List<Object>> methodCache 这里为了获取时方便 做了调整
      */
     private Map<Method, Map<String, MiniAdvice>> methodCache;
 
