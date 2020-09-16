@@ -9,6 +9,8 @@ import april.springframework.aop.support.MiniAdvisedSupport;
 import april.springframework.beans.MiniBeanWrapper;
 import april.springframework.beans.config.MiniBeanDefinition;
 import april.springframework.beans.support.MiniBeanDefinitionReader;
+import april.springframework.beans.support.MiniDefaultListableBeanFactory;
+import april.springframework.core.MiniBeanFactory;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,7 @@ import java.util.Properties;
  * @author yanzx
  */
 @Slf4j
-public class MiniApplicationContext {
+public class MiniApplicationContext extends MiniDefaultListableBeanFactory implements MiniBeanFactory {
 
     private MiniBeanDefinitionReader reader;
 
