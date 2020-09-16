@@ -6,8 +6,8 @@ import april.springframework.annotation.MiniController;
 import april.springframework.annotation.MiniRequestMapping;
 import april.springframework.annotation.MiniRequestParam;
 import april.springframework.webmvc.servlet.MiniModelAndView;
+import com.google.common.collect.Maps;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,7 +23,7 @@ public class PageAction {
     @MiniRequestMapping("/first.html")
     public MiniModelAndView query(@MiniRequestParam("teacher") String teacher) {
         String result = queryService.query(teacher);
-        Map<String, Object> model = new HashMap<>();
+        Map<String, Object> model = Maps.newHashMap();
         model.put("teacher", teacher);
         model.put("data", result);
         model.put("token", "123456");

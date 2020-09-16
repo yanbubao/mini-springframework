@@ -3,6 +3,7 @@ package april.springframework.webmvc.servlet;
 import april.springframework.annotation.MiniController;
 import april.springframework.annotation.MiniRequestMapping;
 import april.springframework.context.MiniApplicationContext;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 
@@ -31,17 +32,17 @@ public class MiniDispatcherServlet extends HttpServlet {
     /**
      * Spring中使用List存储handlerMapping
      */
-    private List<MiniHandlerMapping> handlerMappings = Lists.newArrayList();
+    private final List<MiniHandlerMapping> handlerMappings = Lists.newArrayList();
 
     /**
      * handlerMapping 和 HandlerAdapter 一对一映射
      */
-    private Map<MiniHandlerMapping, MiniHandlerAdapter> handlerAdapterMap = new HashMap<>();
+    private final Map<MiniHandlerMapping, MiniHandlerAdapter> handlerAdapterMap = Maps.newHashMap();
 
     /**
      * viewResolvers 每个视图对应一个解析器
      */
-    private List<MiniViewResolver> viewResolvers = Lists.newArrayList();
+    private final List<MiniViewResolver> viewResolvers = Lists.newArrayList();
 
     private static final String CONTEXT_CONFIG_LOCATION = "contextConfigLocation";
 

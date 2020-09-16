@@ -2,6 +2,7 @@ package april.springframework.aop.support;
 
 import april.springframework.aop.aspect.MiniAdvice;
 import april.springframework.aop.config.MiniAopConfig;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
@@ -70,7 +71,7 @@ public class MiniAdvisedSupport {
         this.pointCutClassPattern = Pattern.compile("class " + pointCutForClassRegex.substring(pointCutForClassRegex.lastIndexOf(" ") + 1));
 
         // 享元的Advice通知缓存池
-        methodCache = new HashMap<>();
+        methodCache = Maps.newHashMap();
 
         // 切面表达式的正则对象
         Pattern pointCutPattern = Pattern.compile(pointCut);
@@ -96,7 +97,7 @@ public class MiniAdvisedSupport {
 
                 Matcher matcher = pointCutPattern.matcher(targetMethodName);
                 if (matcher.matches()) {
-                    Map<String, MiniAdvice> adviceMap = new HashMap<>();
+                    Map<String, MiniAdvice> adviceMap = Maps.newHashMap();
                     if (StringUtils.isNotBlank(this.aopConfig.getAspectBefore())) {
                         adviceMap.put("before", MiniAdvice.builder()
                                 .aspectInstance(aspectClazz.newInstance())

@@ -7,12 +7,12 @@ import april.springframework.annotation.MiniController;
 import april.springframework.annotation.MiniRequestMapping;
 import april.springframework.annotation.MiniRequestParam;
 import april.springframework.webmvc.servlet.MiniModelAndView;
+import com.google.common.collect.Maps;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,7 +43,7 @@ public class MyAction {
             String result = modifyService.add(name, addr);
             return out(response, result);
         } catch (Throwable e) {
-            Map<String, String> model = new HashMap<String, String>();
+            Map<String, String> model = Maps.newHashMap();
             model.put("detail", e.getCause().getMessage());
             model.put("stackTrace", Arrays.toString(e.getStackTrace()));
             return new MiniModelAndView("500", model);

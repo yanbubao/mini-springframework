@@ -10,10 +10,10 @@ import april.springframework.beans.MiniBeanWrapper;
 import april.springframework.beans.config.MiniBeanDefinition;
 import april.springframework.beans.support.MiniBeanDefinitionReader;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -31,17 +31,17 @@ public class MiniApplicationContext {
     /**
      * beanDefinitionMap
      */
-    private Map<String, MiniBeanDefinition> beanDefinitionMap = new HashMap<>();
+    private final Map<String, MiniBeanDefinition> beanDefinitionMap = Maps.newHashMap();
 
     /**
      * bean原生实例Map
      */
-    private Map<String, Object> factoryBeanObjectCache = new HashMap<>();
+    private final Map<String, Object> factoryBeanObjectCache = Maps.newHashMap();
 
     /**
      * beanWrapperMap
      */
-    private Map<String, MiniBeanWrapper> factoryBeanWrapperCache = new HashMap<>();
+    private final Map<String, MiniBeanWrapper> factoryBeanWrapperCache = Maps.newHashMap();
 
     public MiniApplicationContext(String... contextConfigLocations) {
 

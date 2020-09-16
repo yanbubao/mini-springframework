@@ -1,13 +1,13 @@
 package april.springframework.webmvc.servlet;
 
 import april.springframework.annotation.MiniRequestParam;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ public class MiniHandlerAdapter {
     public MiniModelAndView handler(HttpServletRequest req, HttpServletResponse resp,
                                     MiniHandlerMapping handlerMapping) throws Exception {
         // 保存形参列表，将参数名称和参数位置的关系保存起来
-        Map<String, Integer> paramIndexMapping = new HashMap<>();
+        Map<String, Integer> paramIndexMapping = Maps.newHashMap();
 
         // 通过运行时的状态去获取参数
         Annotation[][] pa = handlerMapping.getMethod().getParameterAnnotations();
